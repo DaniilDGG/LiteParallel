@@ -83,6 +83,8 @@ namespace Threads
                 _ => (int?)null
             };
 
+            if (estimatedCount <= 0) return;
+
             var workersCount = alwaysUseMultithreading
                 ? Environment.ProcessorCount
                 : Math.Min(Environment.ProcessorCount, estimatedCount ?? Environment.ProcessorCount);
