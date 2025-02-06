@@ -150,5 +150,39 @@ namespace Threads
 
             countdown.Wait();
         }
+
+        /// <summary>
+        /// Executes a parallel loop over a collection, distributing iterations among available threads 
+        /// for improved performance. Supports both indexed and non-indexed collections.
+        /// Optimization for the list.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in the collection.</typeparam>
+        /// <param name="source">The collection of elements to process.</param>
+        /// <param name="body">The action to execute for each element.</param>
+        /// <param name="alwaysUseMultithreading">If true, forces the use of multiple threads even for small collections.</param>
+        public static void ForEach<T>(List<T> source, Action<T> body, bool alwaysUseMultithreading = false)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (body == null) throw new ArgumentNullException(nameof(body));
+            
+            For(0, source.Count, i => body(source[i]), alwaysUseMultithreading);
+        }
+        
+        /// <summary>
+        /// Executes a parallel loop over a collection, distributing iterations among available threads 
+        /// for improved performance. Supports both indexed and non-indexed collections.
+        /// Optimization for the array.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in the collection.</typeparam>
+        /// <param name="source">The collection of elements to process.</param>
+        /// <param name="body">The action to execute for each element.</param>
+        /// <param name="alwaysUseMultithreading">If true, forces the use of multiple threads even for small collections.</param>
+        public static void ForEach<T>(T[] source, Action<T> body, bool alwaysUseMultithreading = false)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (body == null) throw new ArgumentNullException(nameof(body));
+            
+            For(0, source.Length, i => body(source[i]), alwaysUseMultithreading);
+        }
     }
 }
