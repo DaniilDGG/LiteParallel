@@ -49,8 +49,19 @@ namespace Threads
                 ThreadPool.UnsafeQueueUserWorkItem(static state =>
                 {
                     var (s, e, b, c) = ((int, int, Action<int>, CountdownEvent))state!;
-                    for (var j = s; j < e; j++) b(j);
-                    c.Signal();
+                    
+                    try
+                    {
+                        for (var j = s; j < e; j++) b(j);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine($"Thread failed: {ex}");
+                    }
+                    finally
+                    {
+                        c.Signal();
+                    }
                 }, (start, end, body, countdown));
             }
 
@@ -141,6 +152,10 @@ namespace Threads
                                 ArrayPool<T>.Shared.Return(batch);
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine($"Thread failed: {ex}");
                     }
                     finally
                     {
